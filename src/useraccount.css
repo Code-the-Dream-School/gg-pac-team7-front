@@ -1,0 +1,26 @@
+/* src/UserAccount.css */
+.user-account {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.user-account h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.user-account div {
+  margin-bottom: 10px;
+}
+
+.user-account label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.user-account span {
+  font-size: 16px;
+}
