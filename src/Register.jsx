@@ -29,19 +29,13 @@ function Register () {
     }, [])
 
     useEffect(() => {
-        const result = USER_REGEX.test(user);
-        console.log(result);
-        console.log(user);
-        setValidName(result);
+        setValidName(USER_REGEX.test(user));
     }, [user])
 
     useEffect(() => {
-        const result = PWD_REGEX.test(pwd);
-        console.log(result);
-        console.log(pwd);
-        setValidPwd(result);
-        const match = pwd === matchPwd;
-        setValidMatch(match);
+        const isPwdValid = PWD_REGEX.test(pwd);
+        setValidPwd(isPwdValid);
+        setValidMatch(isPwdValid && pwd === matchPwd);
     }, [pwd, matchPwd])
 
     useEffect(() => {
