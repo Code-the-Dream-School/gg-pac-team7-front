@@ -20,6 +20,7 @@ function Navigation() {
 
   return (
     <>
+      { /* TODO: Finish the navigation bar for mobile view. */ }
       <div className="md:hidden">
         <Bars3Icon aria-hidden="true" className="h-6 w-6" />
       </div>
