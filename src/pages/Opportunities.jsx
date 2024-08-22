@@ -16,11 +16,13 @@ function Opportunities() {
     <>
       <section className="bg-slate-200 text-center py-10">
         <div className="container items-center mx-auto max-w-5xl px-4 py-4">
+          {/* TODO: Implement search functionality combined with the map. */}
           <input
             type="text"
             placeholder="Default Location"
             className="border rounded-full px-6 py-4 w-full md:w-1/2 mb-4"
           />
+          {/* TODO: Set up category selection */}
           <div className="space-x-2 space-y-2">
             <button
               type="button"
@@ -84,6 +86,8 @@ function Opportunities() {
               </div>
             ))}
           </div>
+
+          {/* TODO: Implement pagination */}
           <div className="flex flex-col md:flex-row justify-between items-center md:items-stretch space-y-4 md:space-y-0">
             <div class="md:flex-1 flex items-center md:justify-start">
               <span class="text-slate-500">Showing 1-10</span>
@@ -104,6 +108,7 @@ function Opportunities() {
             </div>
           </div>
         </div>
+
         <div className="hidden md:block w-1/3">MAP</div>
       </div>
     </>
