@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useReducer } from 'react';
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons" ;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome" ;
+import "./Register.css"
 
 const USER_REGEX = /^[a-zA-Z][a-zA-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -49,7 +50,10 @@ function Register () {
 
 
     return (
-        <>
+        
+        <div className="container mx-auto max-w-3xl px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Register</h1>
+
         {success ? (
                 <section>
                     <h1>Success!</h1>
@@ -60,7 +64,7 @@ function Register () {
             ) : (
                 <section>
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>    
-                    <h1>Register</h1>
+                    
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="username">
                             Username: 
@@ -152,7 +156,7 @@ function Register () {
                     </p>
                 </section>
             )}
-        </>
+        </div>
     )
 }
 
