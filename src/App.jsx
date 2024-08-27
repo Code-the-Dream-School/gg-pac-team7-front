@@ -1,6 +1,6 @@
-import React from "react";
-import {BrowserRouter as Router, Route, Routes, Link, useLocation} from "react-router-dom";
-import { GlobeEuropeAfricaIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes, Link, useLocation } from "react-router-dom";
+import { GlobeEuropeAfricaIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import MainPage from "./pages/MainPage";
 import About from "./pages/About";
 import Opportunities from "./pages/Opportunities";
@@ -10,6 +10,7 @@ import LogIn from "./pages/LogIn";
 
 function Navigation() {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigation = [
     { name: "Opportunities", href: "/opportunities" },
@@ -20,10 +21,39 @@ function Navigation() {
 
   return (
     <>
-      { /* TODO: Finish the navigation bar for mobile view. */ }
       <div className="md:hidden">
-        <Bars3Icon aria-hidden="true" className="h-6 w-6" />
+        <button onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? (
+            <XMarkIcon aria-hidden="true" className="relative h-6 w-6 z-50" />
+          ) : (
+            <Bars3Icon aria-hidden="true" className="relative h-6 w-6" />
+          )}
+        </button>
       </div>
+
+      {/* Выпадающее меню */}
+      {menuOpen && (
+        <div className="absolute top-0 right-0 bg-white shadow-lg pr-9 z-40 md:hidden">
+          <ul className="flex flex-col p-4">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                <Link
+                  to={item.href}
+                  className={`${
+                    location.pathname.startsWith(item.href)
+                      ? "bg-slate-500 text-white"
+                      : "text-gray-900"
+                  } block px-3 py-2 rounded-md`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <nav className="hidden md:flex">
         <ul className="flex space-x-6">
           {navigation.map((item) => (
