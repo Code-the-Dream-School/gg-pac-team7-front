@@ -31,7 +31,7 @@ function Navigation() {
         </button>
       </div>
 
-      {/* Выпадающее меню */}
+      {/* Dropdown menu */}
       {menuOpen && (
         <div className="absolute top-0 right-0 bg-white shadow-lg pr-9 z-40 md:hidden">
           <ul className="flex flex-col p-4">
