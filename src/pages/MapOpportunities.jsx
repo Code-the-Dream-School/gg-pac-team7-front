@@ -3,8 +3,9 @@ import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 
 // Define the libraries needed for Google Maps
 const libraries = ['marker']; 
+const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-function MapOpportunities({ opportunities, googleMapsApiKey }) {
+function MapOpportunities({ opportunities }) {
   // Reference to hold the map instance.
   const mapRef = useRef(null);
 
@@ -43,35 +44,33 @@ function MapOpportunities({ opportunities, googleMapsApiKey }) {
     }
 
     // If only one opportunity, center the map on it and add a single marker.
-    if (opportunities.length === 1) {
-      const { latitude, longitude } = opportunities[0];
-      map.setCenter({ lat: latitude, lng: longitude });
-      map.setZoom(zoomLevelForSingleMarker);
-
-      const marker = new window.google.maps.Marker({
-        map,
-        position: { lat: latitude, lng: longitude },
-        title: opportunities[0].title,
-      });
-      map.markers.push(marker);
-    } else {
-      // If multiple opportunities, fit the map to show all markers.
+    if (opportunities.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
 
       opportunities.forEach((opportunity) => {
-        const { latitude, longitude } = opportunity;
-        bounds.extend({ lat: latitude, lng: longitude });
-
+        const { latitude, longitude, title } = opportunity;
+        
+        // Create and place a marker on the map.
         const marker = new window.google.maps.Marker({
           map,
           position: { lat: latitude, lng: longitude },
-          title: opportunity.title,
+          title: title,
         });
+        
         map.markers.push(marker);
+
+        // Extend the map bounds to include this location.
+        bounds.extend({ lat: latitude, lng: longitude });
       });
 
-      // Adjust the map to fit all the markers within the bounding box.
-      map.fitBounds(bounds);
+      // If there's only one opportunity, center and zoom the map manually.
+      if (opportunities.length === 1) {
+        map.setCenter(bounds.getCenter());
+        map.setZoom(zoomLevelForSingleMarker);
+      } else {
+        // If there are multiple opportunities, adjust the map to fit all markers.
+        map.fitBounds(bounds);
+      }
     }
   };
 
@@ -99,3 +98,4 @@ function MapOpportunities({ opportunities, googleMapsApiKey }) {
 }
 
 export default MapOpportunities;
+

@@ -9,7 +9,9 @@ function SearchOpportunities({ opportunities, onFilter }) {
     setSearchTerm(value);
 
     const filtered = opportunities.filter((opportunity) =>
-      opportunity.location.toLowerCase().includes(value)
+      opportunity.location.toLowerCase().includes(value) || 
+      opportunity.title.toLowerCase().includes(value) ||
+      opportunity.description.toLowerCase().includes(value)
     );
 
     onFilter(filtered); 
@@ -18,7 +20,7 @@ function SearchOpportunities({ opportunities, onFilter }) {
   return (
     <input
       type="text"
-      placeholder="Search by location" 
+      placeholder="Search events" 
       value={searchTerm}
       onChange={handleSearch}
       className="border rounded-full px-6 py-4 w-full md:w-1/2 mb-4"
@@ -27,3 +29,4 @@ function SearchOpportunities({ opportunities, onFilter }) {
 }
 
 export default SearchOpportunities;
+

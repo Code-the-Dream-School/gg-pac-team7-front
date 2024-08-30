@@ -11,7 +11,7 @@ function Opportunities() {
   const [filteredOpportunities, setFilteredOpportunities] = useState(
     opportunities
   );
-  const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
   opportunities.sort((a, b) => b.id - a.id);
 
   const categories = Array.from(
@@ -52,7 +52,7 @@ function Opportunities() {
         <div className="w-full md:w-2/3">
           <div className="mb-6">
             <h2 className="text-2xl font-extrabold">
-              {filteredOpportunities.length}
+              {filteredOpportunities.length === 1 ? `${filteredOpportunities.length} event available` : `${filteredOpportunities.length} events available`}
             </h2>
             <span className="text-slate-500">Showing 1-10</span>
           </div>
@@ -117,7 +117,6 @@ function Opportunities() {
       <div className="hidden md:block w-1/3">
         <MapOpportunities
           opportunities={filteredOpportunities}
-          googleMapsApiKey={googleMapsApiKey}
         />
       </div>
       </div>
