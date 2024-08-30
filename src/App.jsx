@@ -73,6 +73,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/login" element={<LogIn />} />
+            {/* TODO: Comment out "/documentation" route before deploying */}
             <Route path="/documentation" element={<Documentation />} />
           </Routes>
         </main>
