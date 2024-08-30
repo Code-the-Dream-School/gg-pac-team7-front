@@ -7,6 +7,7 @@ import Opportunities from "./pages/Opportunities";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
+import Documentation from "./pages/Documentation";
 
 function Navigation() {
   const location = useLocation();
@@ -72,6 +73,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/login" element={<LogIn />} />
+            {/* TODO: Comment out "/documentation" route before deploying */}
+            <Route path="/documentation" element={<Documentation />} />
           </Routes>
         </main>
 

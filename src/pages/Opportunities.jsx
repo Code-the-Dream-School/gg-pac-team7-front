@@ -1,5 +1,6 @@
 import React from "react";
 import { opportunities } from "../util/data";
+import BaseLink from '../components/BaseLink';
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -58,13 +59,13 @@ function Opportunities() {
                 key={index}
               >
                 <div className="mb-4 md:mb-0 w-full md:w-48 md:h-32 flex-shrink-0 md:mx-0 md:mr-4">
-                  <a href={`/opportunities/${el.id}`}>
+                  <BaseLink to={`/opportunities/${el.id}`}>
                     <img
                       src={el.mainImageUrl}
                       alt={`Opportunity ${el.id}`}
                       className="w-full h-full max-w-xs max-h-48 mx-auto md:max-w-full md:max-h-full object-cover rounded"
                     />
-                  </a>
+                  </BaseLink>
                 </div>
                 <div>
                   <h4>
