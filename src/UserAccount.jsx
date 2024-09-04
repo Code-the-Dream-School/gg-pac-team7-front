@@ -1,122 +1,126 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 const UserAccount = ({ userId }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userId}`);
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
-
-  const addBookmark = async (newBookmark) => {
-    try {
-      const response = await axios.put(`/api/user/${userId}`, { bookmark: newBookmark });
-      setUser(response.data);
-    } catch (error) {
-      console.error('Error adding bookmark:', error);
-    }
-  };
-
-  if (!user) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <h1>User Account</h1>
-      <UserProfile user={user} />
-      <BookmarkedEvents events={user.bookmarks} addBookmark={addBookmark} />
-    </div>
-  );
-};
-
-const UserProfile = ({ user }) => (
-  <div>
-    <h2>{user.firstName} {user.lastName}</h2>
-    <p>Email: {user.email}</p>
-    <p>Bio: {user.bio}</p>
-  </div>
-);
-
-const BookmarkedEvents = ({ events, addBookmark }) => {
-  const [newEvent, setNewEvent] = useState({
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
+  const [bookmark, setBookmark] = useState({
     title: '',
     startDate: '',
     endDate: '',
     address: '',
-    coordinates: { lat: '', lng: '' }
+    coordinates: { lat: '', lng: '' },
   });
+  const [showBookmark, setShowBookmark] = useState(false);
+
+  useEffect(() => {
+  
+  }, []);
 
   const handleAddBookmark = () => {
-    addBookmark(newEvent);
-    setNewEvent({
-      title: '',
-      startDate: '',
-      endDate: '',
-      address: '',
-      coordinates: { lat: '', lng: '' }
+    const currentDateTime = new Date().toISOString();
+    setBookmark({
+      ...bookmark,
+      title: `${user.firstName} ${user.lastName}'s Event`,
+      startDate: currentDateTime,
+      endDate: currentDateTime,
+    });
+    setShowBookmark(true);
+  };
+
+  const handleInputChange = (e) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleBookmarkChange = (e) => {
+    setBookmark({
+      ...bookmark,
+      [e.target.name]: e.target.value,
     });
   };
 
   return (
     <div>
-      <h3>Bookmarked Events</h3>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>
-            <h4>{event.title}</h4>
-            <p>Start Date: {event.startDate}</p>
-            <p>End Date: {event.endDate}</p>
-            <p>Address: {event.address}</p>
-            <p>Coordinates: {event.coordinates.lat}, {event.coordinates.lng}</p>
-          </li>
-        ))}
-      </ul>
+      <h1>User Account</h1>
       <div>
         <input
           type="text"
-          placeholder="Event Title"
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+          name="firstName"
+          placeholder="First Name"
+          value={user.firstName}
+          onChange={handleInputChange}
         />
         <input
           type="text"
-          placeholder="Start Date"
-          value={newEvent.startDate}
-          onChange={(e) => setNewEvent({ ...newEvent, startDate: e.target.value })}
+          name="lastName"
+          placeholder="Last Name"
+          value={user.lastName}
+          onChange={handleInputChange}
         />
         <input
-          type="text"
-          placeholder="End Date"
-          value={newEvent.endDate}
-          onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={user.email}
+          onChange={handleInputChange}
         />
+      </div>
+
+      <BookmarkedEvent
+        bookmark={bookmark}
+        addBookmark={handleAddBookmark}
+        showBookmark={showBookmark}
+        handleBookmarkChange={handleBookmarkChange}
+      />
+    </div>
+  );
+};
+
+const BookmarkedEvent = ({ bookmark, addBookmark, showBookmark, handleBookmarkChange }) => {
+  return (
+    <div>
+      <h3>Bookmarked Event</h3>
+      <button onClick={addBookmark}>
+        {showBookmark ? 'Update Bookmark' : 'Add Bookmark'}
+      </button>
+
+      {showBookmark && (
+        <div>
+          <h4>{bookmark.title}</h4>
+          <p>Start Date: {new Date(bookmark.startDate).toLocaleString()}</p>
+          <p>End Date: {new Date(bookmark.endDate).toLocaleString()}</p>
+          <p>Address: {bookmark.address}</p>
+          <p>Coordinates: {bookmark.coordinates.lat}, {bookmark.coordinates.lng}</p>
+        </div>
+      )}
+
+      <div>
         <input
           type="text"
+          name="address"
           placeholder="Address"
-          value={newEvent.address}
-          onChange={(e) => setNewEvent({ ...newEvent, address: e.target.value })}
+          value={bookmark.address}
+          onChange={handleBookmarkChange}
         />
         <input
           type="text"
+          name="lat"
           placeholder="Latitude"
-          value={newEvent.coordinates.lat}
-          onChange={(e) => setNewEvent({ ...newEvent, coordinates: { ...newEvent.coordinates, lat: e.target.value } })}
+          value={bookmark.coordinates.lat}
+          onChange={(e) => handleBookmarkChange({ target: { name: 'coordinates', value: { ...bookmark.coordinates, lat: e.target.value } } })}
         />
         <input
           type="text"
+          name="lng"
           placeholder="Longitude"
-          value={newEvent.coordinates.lng}
-          onChange={(e) => setNewEvent({ ...newEvent, coordinates: { ...newEvent.coordinates, lng: e.target.value } })}
+          value={bookmark.coordinates.lng}
+          onChange={(e) => handleBookmarkChange({ target: { name: 'coordinates', value: { ...bookmark.coordinates, lng: e.target.value } } })}
         />
-        <button onClick={handleAddBookmark}>Add Bookmark</button>
       </div>
     </div>
   );
