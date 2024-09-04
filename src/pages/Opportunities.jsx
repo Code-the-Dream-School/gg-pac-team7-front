@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { opportunities } from "../util/data";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
@@ -8,12 +8,43 @@ import SearchOpportunities from "./SearchOpportunities";
 import MapOpportunities from "./MapOpportunities";
 
 function Opportunities() {
-  const [filteredOpportunities, setFilteredOpportunities] = useState(
-    opportunities
-  );
+  const [opportunities, setOpportunities] = useState([]);
+  const [filteredOpportunities, setFilteredOpportunities] = useState([]);
 
+  useEffect(() => {
+    // Fetch data from the server
+    const fetchOpportunities = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/v1/events/");
+        const data = await response.json();
+
+        // Map the API data to match with our structure
+        const mappedData = data.map((item) => ({
+          id: item._id,
+          title: item.title,
+          date: new Date(item.startDate).toLocaleDateString(),
+          location: item.address,
+          description: item.description,
+          mainImageUrl: item.eventImages[0] || "placeholder-image-url.jpg",
+          latitude: item.coordinates[0],
+          longitude: item.coordinates[1],
+          category: item.category,
+        }));
+
+        setOpportunities(mappedData);
+        setFilteredOpportunities(mappedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
+
+  // Sorting opportunities by id
   opportunities.sort((a, b) => b.id - a.id);
 
+  // Extracting categories from the fetched opportunities
   const categories = Array.from(
     new Set(opportunities.map((item) => item.category))
   );
@@ -27,11 +58,12 @@ function Opportunities() {
             opportunities={opportunities}
             onFilter={setFilteredOpportunities}
           />
-          {/* TODO: Set up category selection */}
+          {/* Category selection */}
           <div className="space-x-2 space-y-2">
             <button
               type="button"
               className="bg-slate-300 px-6 py-3 border-2 border-slate-300 font-medium rounded-full"
+              onClick={() => setFilteredOpportunities(opportunities)}
             >
               All Issues
             </button>
@@ -40,6 +72,13 @@ function Opportunities() {
                 key={index}
                 type="button"
                 className="px-6 py-3 border-2 border-slate-300 font-medium rounded-full"
+                onClick={() =>
+                  setFilteredOpportunities(
+                    opportunities.filter(
+                      (opportunity) => opportunity.category === category
+                    )
+                  )
+                }
               >
                 {category}
               </button>
@@ -52,7 +91,9 @@ function Opportunities() {
         <div className="w-full md:w-2/3">
           <div className="mb-6">
             <h2 className="text-2xl font-extrabold">
-              {filteredOpportunities.length === 1 ? `${filteredOpportunities.length} event available` : `${filteredOpportunities.length} events available`}
+              {filteredOpportunities.length === 1
+                ? `${filteredOpportunities.length} event available`
+                : `${filteredOpportunities.length} events available`}
             </h2>
             <span className="text-slate-500">Showing 1-10</span>
           </div>
@@ -63,29 +104,38 @@ function Opportunities() {
                 key={index}
               >
                 <div className="mb-4 md:mb-0 w-full md:w-48 md:h-32 flex-shrink-0 md:mx-0 md:mr-4">
-                  <a href={`/opportunities/${el.id}`}>
+                  <Link
+                    to={`/opportunities/${el.id}`}
+                    state={{ opportunityData: el }}
+                  >
                     <img
                       src={el.mainImageUrl}
                       alt={`Opportunity ${el.id}`}
                       className="w-full h-full max-w-xs max-h-48 mx-auto md:max-w-full md:max-h-full object-cover rounded"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div>
                   <h4>
-                    <a
-                      href={`/opportunities/${el.id}`}
+                    <Link
+                      to={`/opportunities/${el.id}`}
+                      state={{ opportunityData: el }}
                       className="underline text-lg text-blue-500 hover:text-blue-400"
                     >
                       {el.title}
-                    </a>
+                    </Link>
                   </h4>
                   <div className="text-sm text-slate-500">
                     <span>{el.date}, </span>
                     <span>{el.location}</span>
                   </div>
                   <p className="mb-2">
-                    <a href={`/opportunities/${el.id}`}>{el.description}</a>
+                    <Link
+                      to={`/opportunities/${el.id}`}
+                      state={{ opportunityData: el }}
+                    >
+                      {el.description}
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -114,14 +164,14 @@ function Opportunities() {
           </div>
         </div>
 
-      <div className="hidden md:block w-1/3">
-        <MapOpportunities
-          opportunities={filteredOpportunities}
-        />
-      </div>
+        <div className="hidden md:block w-1/3">
+          <MapOpportunities opportunities={filteredOpportunities} />
+        </div>
       </div>
     </>
   );
 }
 
 export default Opportunities;
+
+

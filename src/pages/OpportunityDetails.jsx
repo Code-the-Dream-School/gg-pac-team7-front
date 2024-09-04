@@ -1,14 +1,12 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import {MapPinIcon, CalendarDaysIcon, HeartIcon} from "@heroicons/react/24/outline";
-import { opportunities } from "../util/data";
+import { useParams, useLocation } from "react-router-dom";
+import { MapPinIcon, CalendarDaysIcon, HeartIcon } from "@heroicons/react/24/outline";
 
 function OpportunityDetails() {
   const { id } = useParams();
+  const location = useLocation();
 
-  const opportunityData = opportunities.find(
-    (opportunity) => opportunity.id === parseInt(id)
-  );
+  const opportunityData = location.state?.opportunityData;
 
   if (!opportunityData) {
     return (
@@ -23,7 +21,7 @@ function OpportunityDetails() {
       <div className="w-full h-72 overflow-hidden shadow-md mb-8">
         <img
           src={opportunityData.mainImageUrl}
-          alt="Location"
+          alt={opportunityData.title}
           className="w-full h-full object-cover object-center"
         />
       </div>
@@ -44,11 +42,11 @@ function OpportunityDetails() {
         </div>
 
         <div className="grid grid-cols-2 gap-1 sm:gap-8 mb-8 p-1 sm:p-8">
-          {opportunityData.galleryImages.map((image, index) => (
+          {opportunityData.galleryImages?.map((image, index) => (
             <img
               key={index}
               src={image}
-              alt={'desc'}
+              alt={`Gallery image ${index + 1}`}
               className="w-full h-48 object-cover rounded"
             />
           ))}
