@@ -4,7 +4,6 @@
     left: -9999px;
 }
 
-
 .hide {
     display: none;
 }
@@ -27,3 +26,21 @@
     margin-bottom: 0.5rem;
 }
 
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 10px;
+    padding: auto;
+    width: auto;
+  }
+
+  .instructions {
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.25rem;
+    position: relative;
+    bottom: -10px;
+}
