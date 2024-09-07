@@ -9,6 +9,7 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
 import Documentation from "./pages/Documentation";
+import UserAccount from "./pages/UserAccount";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="/login" element={<LogIn />} />
             {/* TODO: Comment out "/documentation" route before deploying */}
             <Route path="/documentation" element={<Documentation />} />
+            <Route path="/account" element={<UserAccount />} />
           </Routes>
         </main>
 

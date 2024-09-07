@@ -3,6 +3,7 @@
 
 
 import React, { useState } from 'react';
+import ContentContainer from '../components/ContentContainer';
 
 const UserAccount = () => {
   const [user, setUser] = useState({
@@ -33,6 +34,7 @@ const UserAccount = () => {
   };
 
   return (
+    <ContentContainer>
     <div>
       <h1>User Account</h1>
       <div>
@@ -67,6 +69,7 @@ const UserAccount = () => {
         <BookmarkedEvent bookmark={bookmark} />
       )}
     </div>
+    </ContentContainer>
   );
 };
 
