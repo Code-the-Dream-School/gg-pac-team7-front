@@ -1,34 +1,18 @@
-import React, { useState, useEffect } from 'react';
+ 
 
-const UserAccount = ({ userId }) => {
+
+
+import React, { useState } from 'react';
+
+const UserAccount = () => {
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
     email: '',
   });
-  const [bookmark, setBookmark] = useState({
-    title: '',
-    startDate: '',
-    endDate: '',
-    address: '',
-    coordinates: { lat: '', lng: '' },
-  });
+
+  const [bookmark, setBookmark] = useState(null);
   const [showBookmark, setShowBookmark] = useState(false);
-
-  useEffect(() => {
-  
-  }, []);
-
-  const handleAddBookmark = () => {
-    const currentDateTime = new Date().toISOString();
-    setBookmark({
-      ...bookmark,
-      title: `${user.firstName} ${user.lastName}'s Event`,
-      startDate: currentDateTime,
-      endDate: currentDateTime,
-    });
-    setShowBookmark(true);
-  };
 
   const handleInputChange = (e) => {
     setUser({
@@ -37,11 +21,15 @@ const UserAccount = ({ userId }) => {
     });
   };
 
-  const handleBookmarkChange = (e) => {
+  const handleDisplayBookmark = () => {
     setBookmark({
-      ...bookmark,
-      [e.target.name]: e.target.value,
+      title: `John Doe's Event`,
+      startDate: new Date().toISOString(),
+      endDate: new Date().toISOString(),
+      address: '123 Main St, Cityville',
+      coordinates: { lat: '40.7128', lng: '-74.0060' },
     });
+    setShowBookmark(true);
   };
 
   return (
@@ -71,56 +59,27 @@ const UserAccount = ({ userId }) => {
         />
       </div>
 
-      <BookmarkedEvent
-        bookmark={bookmark}
-        addBookmark={handleAddBookmark}
-        showBookmark={showBookmark}
-        handleBookmarkChange={handleBookmarkChange}
-      />
+      <button onClick={handleDisplayBookmark}>
+        {showBookmark ? 'Show Bookmark' : 'Display Bookmark'}
+      </button>
+
+      {showBookmark && bookmark && (
+        <BookmarkedEvent bookmark={bookmark} />
+      )}
     </div>
   );
 };
 
-const BookmarkedEvent = ({ bookmark, addBookmark, showBookmark, handleBookmarkChange }) => {
+const BookmarkedEvent = ({ bookmark }) => {
   return (
     <div>
       <h3>Bookmarked Event</h3>
-      <button onClick={addBookmark}>
-        {showBookmark ? 'Update Bookmark' : 'Add Bookmark'}
-      </button>
-
-      {showBookmark && (
-        <div>
-          <h4>{bookmark.title}</h4>
-          <p>Start Date: {new Date(bookmark.startDate).toLocaleString()}</p>
-          <p>End Date: {new Date(bookmark.endDate).toLocaleString()}</p>
-          <p>Address: {bookmark.address}</p>
-          <p>Coordinates: {bookmark.coordinates.lat}, {bookmark.coordinates.lng}</p>
-        </div>
-      )}
-
       <div>
-        <input
-          type="text"
-          name="address"
-          placeholder="Address"
-          value={bookmark.address}
-          onChange={handleBookmarkChange}
-        />
-        <input
-          type="text"
-          name="lat"
-          placeholder="Latitude"
-          value={bookmark.coordinates.lat}
-          onChange={(e) => handleBookmarkChange({ target: { name: 'coordinates', value: { ...bookmark.coordinates, lat: e.target.value } } })}
-        />
-        <input
-          type="text"
-          name="lng"
-          placeholder="Longitude"
-          value={bookmark.coordinates.lng}
-          onChange={(e) => handleBookmarkChange({ target: { name: 'coordinates', value: { ...bookmark.coordinates, lng: e.target.value } } })}
-        />
+        <h4>{bookmark.title}</h4>
+        <p>Start Date: {new Date(bookmark.startDate).toLocaleString()}</p>
+        <p>End Date: {new Date(bookmark.endDate).toLocaleString()}</p>
+        <p>Address: {bookmark.address}</p>
+        <p>Coordinates: {bookmark.coordinates.lat}, {bookmark.coordinates.lng}</p>
       </div>
     </div>
   );
