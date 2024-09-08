@@ -21,19 +21,9 @@ const handleSubmit = async (e) => {
   console.log(user, pwd);
   setUser('');
   setPwd('');
-  setSuccess(true);
 }
   return (
   <>
-    {success ? (
-      <section>
-        <h1>You are logged in!</h1>
-        <br />
-        <p>
-          <a href='#'>Go to Home</a>
-        </p>  
-      </section>
-    ) : (
   <section>
     <div className="container mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Sign In</h1>
@@ -68,7 +58,6 @@ const handleSubmit = async (e) => {
         </p>
       </div>
     </section>
-  )}
 </>
  )
 }
