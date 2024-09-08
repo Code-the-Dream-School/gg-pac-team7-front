@@ -1,6 +1,7 @@
 import React from "react";
-import {BrowserRouter as Router, Route, Routes, Link, useLocation} from "react-router-dom";
-import { GlobeEuropeAfricaIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
+import Navigation from "./components/Navigation";
 import MainPage from "./pages/MainPage";
 import About from "./pages/About";
 import Opportunities from "./pages/Opportunities";
@@ -8,44 +9,7 @@ import OpportunityDetails from "./pages/OpportunityDetails";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
 import Register from './pages/Register';
-
-function Navigation() {
-  const location = useLocation();
-
-  const navigation = [
-    { name: "Opportunities", href: "/opportunities" },
-    { name: "About", href: "/about" },
-    { name: "Contact us", href: "/contact-us" },
-    { name: "Log In", href: "/login" },
-  ];
-
-  return (
-    <>
-      { /* TODO: Finish the navigation bar for mobile view. */ }
-      <div className="md:hidden">
-        <Bars3Icon aria-hidden="true" className="h-6 w-6" />
-      </div>
-      <nav className="hidden md:flex">
-        <ul className="flex space-x-6">
-          {navigation.map((item) => (
-            <li key={item.name}>
-              <Link
-                to={item.href}
-                className={`${
-                  location.pathname.startsWith(item.href)
-                    ? "bg-slate-500 text-white"
-                    : "text-gray-900"
-                } px-3 py-2 rounded-md`}
-              >
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </>
-  );
-}
+import Documentation from "./pages/Documentation";
 
 function App() {
   return (
@@ -74,6 +38,8 @@ function App() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/login" element={<LogIn />} />
             <Route path="/register" element={<Register />} />
+            {/* TODO: Comment out "/documentation" route before deploying */}
+            <Route path="/documentation" element={<Documentation />} />
           </Routes>
         </main>
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import {MapPinIcon, CalendarDaysIcon, HeartIcon} from "@heroicons/react/24/outline";
+import { MapPinIcon, CalendarDaysIcon, HeartIcon } from "@heroicons/react/24/outline";
 import { opportunities } from "../util/data";
 
 function OpportunityDetails() {
