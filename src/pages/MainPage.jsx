@@ -48,8 +48,6 @@ function MainPage() {
           </div>
         </div>
       </section>
-      <div className="container mx-auto max-w-5xl px-4 bg-gray">
-      </div>
     </>
   );
 }
