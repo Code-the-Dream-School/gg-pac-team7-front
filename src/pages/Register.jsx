@@ -2,12 +2,11 @@ import { useRef, useState, useEffect } from 'react';
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons" ;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome" ;
 import "./Register.css"
-import axios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 const USER_REGEX = /^[a-zA-Z]{3,20}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/auth/register';
 
 function Register () {
     const userRef = useRef();
@@ -66,12 +65,20 @@ function Register () {
         e.preventDefault();
         
         try {  
+            const response = await axiosInstance.post('/auth/register', 
+                JSON({firstName, lastName, email, pwd }),
+                {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            );
+
             setSuccess(true);
             setFirstName('');
             setLastName('');
             setEmail('');
             setPwd('');
             setMatchPwd(''); 
+
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
@@ -239,8 +246,6 @@ function Register () {
                             />
                         </div>
 
-
-
                         <button disabled={!validFirstName || !validLastName || !validEmail || !validPwd || !validMatch ? true : false}>Sign Up</button>
                    
                         {/* Instructions */}
@@ -263,19 +268,5 @@ function Register () {
         </div>
     )
 }
-
-await axios.post(REGISTER_URL, {
-    "firstName": "Kate",
-    "lastName": "Connor",
-    "email": "connor95@mail.com",
-    "password": "12345",
-    "avatarUrl": ""
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
 
 export default Register;
