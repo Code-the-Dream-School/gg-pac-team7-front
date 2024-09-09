@@ -1,7 +1,4 @@
 /node_modules
 .DS_STORE
-<<<<<<< HEAD
-=======
 .gitignore
->>>>>>> main
 .env
