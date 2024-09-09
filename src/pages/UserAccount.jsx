@@ -1,19 +1,22 @@
 import React from "react";
+import ImageHer from "../../public/her.jpeg";
+import ImageHim from "../../public/him2.jpeg";
 import ContentContainer from "../components/ContentContainer";
 
 const user = {
-  firstName: "John",
+  firstName: "Person",
   lastName: "Doe",
   email: "email@example.com",
 };
 
 const bookmarks = [
   {
-    title: `John Doe's Event`,
+    title: `Jane Doe's Event`,
     startDate: new Date().toISOString(),
     endDate: new Date().toISOString(),
     address: "123 Main St, Cityville",
     coordinates: { lat: "40.7128", lng: "-74.0060" },
+    image: ImageHer,
   },
   {
     title: `John Doe's Event`,
@@ -21,79 +24,26 @@ const bookmarks = [
     endDate: new Date().toISOString(),
     address: "123 Main St, Cityville",
     coordinates: { lat: "40.7128", lng: "-74.0060" },
+    image: ImageHim,
   },
 ];
 
 const UserAccount = () => {
-  // const [bookmark, setBookmark] = useState(null);
-  // const [showBookmark, setShowBookmark] = useState(false);
-
-  // const handleInputChange = (e) => {
-  //   setUser({
-  //     ...user,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
-
-  // const handleDisplayBookmark = () => {
-  //   setBookmark({
-  //     title: `John Doe's Event`,
-  //     startDate: new Date().toISOString(),
-  //     endDate: new Date().toISOString(),
-  //     address: "123 Main St, Cityville",
-  //     coordinates: { lat: "40.7128", lng: "-74.0060" },
-  //   });
-  //   setShowBookmark(true);
-  // };
-
   return (
     <ContentContainer heading={`Hi ${user.firstName} ${user.lastName}`}>
-      <div>
-        {/* TODO FOR MICHAEL: Add a <p> to display the email */}
-
-        {/* <h1>User Account</h1> */}
-        {/* <div>
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={user.firstName}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={user.lastName}
-            onChange={handleInputChange}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={user.email}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <button onClick={handleDisplayBookmark}>
-          {showBookmark ? "Show Bookmark" : "Display Bookmark"}
-        </button> */}
-
-        {/* {showBookmark && bookmark && <BookmarkedEvent bookmark={bookmark} />} */}
-        {bookmarks.map((bookmark) => (
-          <BookmarkedEvent bookmark={bookmark} />
-        ))}
-      </div>
+      <p style={styles.email}>{`${user.email}`}</p>
+      {bookmarks.map((bookmark, index) => (
+        <BookmarkedEvent key={index} bookmark={bookmark} />
+      ))}
     </ContentContainer>
   );
 };
 
 const BookmarkedEvent = ({ bookmark }) => {
   return (
-    <div>
-      <h3>Bookmarked Event</h3>
-      <div>
+    <div style={styles.bookmarkContainer}>
+      <img src={bookmark.image} alt="Event" style={styles.image} />
+      <div style={styles.textContainer}>
         <h4>{bookmark.title}</h4>
         <p>Start Date: {new Date(bookmark.startDate).toLocaleString()}</p>
         <p>End Date: {new Date(bookmark.endDate).toLocaleString()}</p>
@@ -104,6 +54,30 @@ const BookmarkedEvent = ({ bookmark }) => {
       </div>
     </div>
   );
+};
+
+const styles = {
+  email: {
+    fontSize: "18px",
+    color: "blue",    
+    marginBottom: "16px", 
+  },
+  bookmarkContainer: {
+    display: "flex",
+    alignItems: "center",
+    borderRadius: "8px",
+    padding: "16px",
+    margin: "16px 0",
+  },
+  image: {
+    width: "150px",
+    height: "auto",
+    borderRadius: "8px",
+    marginRight: "16px",
+  },
+  textContainer: {
+    flex: 1,
+  },
 };
 
 export default UserAccount;
