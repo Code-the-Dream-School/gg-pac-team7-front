@@ -1,29 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MapPinIcon, CalendarDaysIcon, HeartIcon } from "@heroicons/react/24/outline";
-import { opportunities } from "../util/data";
 
 function OpportunityDetails() {
-  const { id } = useParams();
+  const { id } = useParams(); // Get ID from URL params
+  const [opportunityData, setOpportunityData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const opportunityData = opportunities.find(
-    (opportunity) => opportunity.id === parseInt(id)
-  );
+  useEffect(() => {
+    const fetchOpportunityDetails = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/events/${id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch opportunity details");
+        }
+        const data = await response.json();
 
-  if (!opportunityData) {
-    return (
-      <div className="container mx-auto max-w-3xl px-4 py-8">
-        <div>Opportunity not found</div>
-      </div>
-    );
+        // Map the API response to match the expected structure
+        const mappedOpportunity = {
+          id: data._id,
+          title: data.title,
+          date: new Date(data.startDate).toLocaleDateString(),
+          location: data.address,
+          description: data.description,
+          mainImageUrl: data.eventImages[0] || "placeholder-image-url.jpg",
+          latitude: data.coordinates[0],
+          longitude: data.coordinates[1],
+          galleryImages: data.galleryImages || [],
+          link: data.link || "#",
+        };
+
+        setOpportunityData(mappedOpportunity);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to load opportunity details");
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunityDetails();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!opportunityData) {
+    return <div>Opportunity not found</div>;
+  }
+  
   return (
     <>
       <div className="w-full h-72 overflow-hidden shadow-md mb-8">
         <img
           src={opportunityData.mainImageUrl}
-          alt="Location"
+          alt={opportunityData.title}
           className="w-full h-full object-cover object-center"
         />
       </div>
@@ -44,11 +82,11 @@ function OpportunityDetails() {
         </div>
 
         <div className="grid grid-cols-2 gap-1 sm:gap-8 mb-8 p-1 sm:p-8">
-          {opportunityData.galleryImages.map((image, index) => (
+          {opportunityData.galleryImages?.map((image, index) => (
             <img
               key={index}
               src={image}
-              alt={'desc'}
+              alt={`Gallery image ${index + 1}`}
               className="w-full h-48 object-cover rounded"
             />
           ))}
