@@ -15,7 +15,9 @@ function Opportunities() {
     // Fetch data from the server
     const fetchOpportunities = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/events/");
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/events`
+        );
         const data = await response.json();
 
         // Map the API data to match with our structure
@@ -25,7 +27,8 @@ function Opportunities() {
           date: new Date(item.startDate).toLocaleDateString(),
           location: item.address,
           description: item.description,
-          mainImageUrl: item.eventImages[0] || "placeholder-image-url.jpg",
+          mainImageUrl:
+            item.eventImages[0] || "placeholder-image-url.jpg",
           latitude: item.coordinates[0],
           longitude: item.coordinates[1],
           category: item.category,
@@ -75,7 +78,8 @@ function Opportunities() {
                 onClick={() =>
                   setFilteredOpportunities(
                     opportunities.filter(
-                      (opportunity) => opportunity.category === category
+                      (opportunity) =>
+                        opportunity.category === category
                     )
                   )
                 }
@@ -99,46 +103,32 @@ function Opportunities() {
           </div>
           <div className="mb-6">
             {filteredOpportunities.map((el, index) => (
-              <div
-                className="flex flex-col md:flex-row mb-8 border-b pb-8"
+              <Link
+                to={`/opportunities/${el.id}`}
+                state={{ opportunityData: el }}
                 key={index}
+                className="block mb-8"
               >
-                <div className="mb-4 md:mb-0 w-full md:w-48 md:h-32 flex-shrink-0 md:mx-0 md:mr-4">
-                  <Link
-                    to={`/opportunities/${el.id}`}
-                    state={{ opportunityData: el }}
-                  >
+                <div className="flex flex-col md:flex-row border-b pb-8">
+                  <div className="mb-4 md:mb-0 w-full md:w-48 md:h-32 flex-shrink-0 md:mx-0 md:mr-4">
                     <img
                       src={el.mainImageUrl}
                       alt={`Opportunity ${el.id}`}
                       className="w-full h-full max-w-xs max-h-48 mx-auto md:max-w-full md:max-h-full object-cover rounded"
                     />
-                  </Link>
-                </div>
-                <div>
-                  <h4>
-                    <Link
-                      to={`/opportunities/${el.id}`}
-                      state={{ opportunityData: el }}
-                      className="underline text-lg text-blue-500 hover:text-blue-400"
-                    >
-                      {el.title}
-                    </Link>
-                  </h4>
-                  <div className="text-sm text-slate-500">
-                    <span>{el.date}, </span>
-                    <span>{el.location}</span>
                   </div>
-                  <p className="mb-2">
-                    <Link
-                      to={`/opportunities/${el.id}`}
-                      state={{ opportunityData: el }}
-                    >
-                      {el.description}
-                    </Link>
-                  </p>
+                  <div>
+                    <h4 className="underline text-lg text-blue-500 hover:text-blue-400">
+                      {el.title}
+                    </h4>
+                    <div className="text-sm text-slate-500">
+                      <span>{el.date}, </span>
+                      <span>{el.location}</span>
+                    </div>
+                    <p className="mb-2">{el.description}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -150,14 +140,20 @@ function Opportunities() {
             <div className="flex justify-center space-x-4">
               <button className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2">
                 <span>
-                  <ArrowLongLeftIcon aria-hidden="true" className="h-6 w-6" />
+                  <ArrowLongLeftIcon
+                    aria-hidden="true"
+                    className="h-6 w-6"
+                  />
                 </span>
                 <span className="font-medium">Prev</span>
               </button>
               <button className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2">
                 <span className="font-medium">Next</span>
                 <span>
-                  <ArrowLongRightIcon aria-hidden="true" className="h-6 w-6" />
+                  <ArrowLongRightIcon
+                    aria-hidden="true"
+                    className="h-6 w-6"
+                  />
                 </span>
               </button>
             </div>
@@ -165,7 +161,9 @@ function Opportunities() {
         </div>
 
         <div className="hidden md:block w-1/3">
-          <MapOpportunities opportunities={filteredOpportunities} />
+          <MapOpportunities
+            opportunities={filteredOpportunities}
+          />
         </div>
       </div>
     </>
@@ -173,5 +171,3 @@ function Opportunities() {
 }
 
 export default Opportunities;
-
-

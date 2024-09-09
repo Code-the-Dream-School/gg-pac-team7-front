@@ -26,3 +26,6 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 
 #### Running the front-end server in the browser
 ![browser running](images/front-end-running-browser.png)
+
+#### Running Google Maps in the Opportunities
+To ensure Google Maps works correctly, you need to generate an API key in your Cloud Console and insert it into the `.env` file under the variable `VITE_GOOGLE_MAPS_API_KEY`. Before pushing your commit, make sure to remove the key, as it is private.

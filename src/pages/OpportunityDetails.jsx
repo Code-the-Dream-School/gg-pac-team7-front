@@ -1,21 +1,61 @@
-import React from "react";
-import { useParams, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { MapPinIcon, CalendarDaysIcon, HeartIcon } from "@heroicons/react/24/outline";
 
 function OpportunityDetails() {
-  const { id } = useParams();
-  const location = useLocation();
+  const { id } = useParams(); // Get ID from URL params
+  const [opportunityData, setOpportunityData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const opportunityData = location.state?.opportunityData;
+  useEffect(() => {
+    const fetchOpportunityDetails = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/events/${id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch opportunity details");
+        }
+        const data = await response.json();
 
-  if (!opportunityData) {
-    return (
-      <div className="container mx-auto max-w-3xl px-4 py-8">
-        <div>Opportunity not found</div>
-      </div>
-    );
+        // Map the API response to match the expected structure
+        const mappedOpportunity = {
+          id: data._id,
+          title: data.title,
+          date: new Date(data.startDate).toLocaleDateString(),
+          location: data.address,
+          description: data.description,
+          mainImageUrl: data.eventImages[0] || "placeholder-image-url.jpg",
+          latitude: data.coordinates[0],
+          longitude: data.coordinates[1],
+          galleryImages: data.galleryImages || [],
+          link: data.link || "#",
+        };
+
+        setOpportunityData(mappedOpportunity);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to load opportunity details");
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunityDetails();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!opportunityData) {
+    return <div>Opportunity not found</div>;
+  }
+  
   return (
     <>
       <div className="w-full h-72 overflow-hidden shadow-md mb-8">
