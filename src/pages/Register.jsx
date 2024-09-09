@@ -24,7 +24,7 @@ function Register () {
     const [validEmail, setValidEmail] = useState(false);
     const [emailFocus, setEmailFocus] = useState(false);
 
-    const [pwd, setPwd] = useState('');
+    const [password, setPassword] = useState('');
     const [validPwd, setValidPwd] = useState(false);
     const [pwdFocus, setPwdFocus] = useState(false);
 
@@ -52,32 +52,39 @@ function Register () {
     }, [email])
 
     useEffect(() => {
-        const isPwdValid = PWD_REGEX.test(pwd);
+        const isPwdValid = PWD_REGEX.test(password);
         setValidPwd(isPwdValid);
-        setValidMatch(isPwdValid && pwd === matchPwd);
-    }, [pwd, matchPwd])
+        setValidMatch(isPwdValid && password === matchPwd);
+    }, [password, matchPwd])
 
     useEffect(() => {
         setErrMsg('');
-    }, [firstName, lastName, email, pwd, matchPwd])
-
+    }, [firstName, lastName, email, password, matchPwd])
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        try {  
+        try { 
+            // Send registration data to the backend 
             const response = await axiosInstance.post('/auth/register', 
-                JSON({firstName, lastName, email, pwd }),
+                JSON.stringify({firstName, lastName, email, password }),
                 {
                     headers: {'Content-Type': 'application/json'}
                 }
             );
+            
+            // Extract the token from the response
+            const token = response.data.token;        
+            
+            // Store the JWT in local storage
+            localStorage.setItem('token', token);
 
             setSuccess(true);
             setFirstName('');
             setLastName('');
             setEmail('');
-            setPwd('');
-            setMatchPwd(''); 
+            setPassword('');
+            setMatchPwd('');
 
         } catch (err) {
             if (!err?.response) {
@@ -87,7 +94,7 @@ function Register () {
             } else {
                 setErrMsg('Registration Failed')
             }
-            errRef.current.focus();
+            //errRef.current.focus();
         }
     }
 
@@ -208,14 +215,14 @@ function Register () {
                                 <span className={validPwd ? "valid" : "hide"}>
                                     <FontAwesomeIcon icon={faCheck} />
                                 </span>
-                                <span className={validPwd || !pwd ? "hide" : "invalid"}>
+                                <span className={validPwd || !password ? "hide" : "invalid"}>
                                     <FontAwesomeIcon icon={faTimes} />
                                 </span>
                             </label>
                             <input
                                 type="password"
                                 id="password"
-                                onChange={(e) => setPwd(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                                 aria-invalid={validPwd ? "false" : "true"}
                                 aria-describedby="instruction"
