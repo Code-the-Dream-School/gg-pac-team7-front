@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome" ;
 import "./Register.css"
 import axiosInstance from '../api/axios';
 
-const USER_REGEX = /^[a-zA-Z]{3,20}$/;
+const NAME_REGEX = /^[a-zA-Z]{3,20}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
@@ -40,11 +40,11 @@ function Register () {
     }, [])
 
     useEffect(() => {
-        setValidFirstName(USER_REGEX.test(firstName));
+        setValidFirstName(NAME_REGEX.test(firstName));
     }, [firstName])
 
     useEffect(() => {
-        setValidLastName(USER_REGEX.test(lastName));
+        setValidLastName(NAME_REGEX.test(lastName));
     }, [lastName])
 
     useEffect(() => {
@@ -63,21 +63,22 @@ function Register () {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
+        // Validation before submitting the form 
+        if (!validFirstName || !validLastName || !validEmail || !validPwd || !validMatch) {
+            setErrMsg('Invalid Entry');
+            return;
+        }    
+
         try { 
             // Send registration data to the backend 
             const response = await axiosInstance.post('/auth/register', 
-                JSON.stringify({firstName, lastName, email, password }),
+                JSON.stringify({ firstName, lastName, email, password }),
                 {
                     headers: {'Content-Type': 'application/json'}
                 }
             );
             
-            // Extract the token from the response
-            const token = response.data.token;        
-            
-            // Store the JWT in local storage
-            localStorage.setItem('token', token);
 
             setSuccess(true);
             setFirstName('');
@@ -90,7 +91,7 @@ function Register () {
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
+                setErrMsg('Email already registered');
             } else {
                 setErrMsg('Registration Failed')
             }
@@ -273,7 +274,7 @@ function Register () {
                 </section>
             )}
         </div>
-    )
+    );
 }
 
 export default Register;
