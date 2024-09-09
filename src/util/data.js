@@ -165,7 +165,7 @@ export const opportunities = [
     id: 10,
     category: "Greening",
     title: "School Greening: Planting Trees at Local Schools",
-    location: "Seattle",
+    location: "Austin",
     date: "November 1",
     latitude: 47.6062,
     longitude: -122.3321,
