@@ -10,6 +10,9 @@ import MapOpportunities from "./MapOpportunities";
 function Opportunities() {
   const [opportunities, setOpportunities] = useState([]);
   const [filteredOpportunities, setFilteredOpportunities] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState("All Issues");
+  const itemsPerPage = 10;
 
   useEffect(() => {
     // Fetch data from the server
@@ -52,6 +55,33 @@ function Opportunities() {
     new Set(opportunities.map((item) => item.category))
   );
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
+  const displayedOpportunities = filteredOpportunities.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    if (category === "All Issues") {
+      setFilteredOpportunities(opportunities);
+    } else {
+      setFilteredOpportunities(
+        opportunities.filter((opportunity) => opportunity.category === category)
+      );
+    }
+    setCurrentPage(1);
+  };
+
   return (
     <>
       <section className="bg-slate-200 text-center py-10">
@@ -65,8 +95,12 @@ function Opportunities() {
           <div className="space-x-2 space-y-2">
             <button
               type="button"
-              className="bg-slate-300 px-6 py-3 border-2 border-slate-300 font-medium rounded-full"
-              onClick={() => setFilteredOpportunities(opportunities)}
+              className={`px-6 py-3 border-2 ${
+                selectedCategory === "All Issues"
+                  ? "bg-slate-300 text-grey"
+                  : "border-slate-300"
+              } font-medium rounded-full`}
+              onClick={() => handleCategorySelect("All Issues")}
             >
               All Issues
             </button>
@@ -74,15 +108,12 @@ function Opportunities() {
               <button
                 key={index}
                 type="button"
-                className="px-6 py-3 border-2 border-slate-300 font-medium rounded-full"
-                onClick={() =>
-                  setFilteredOpportunities(
-                    opportunities.filter(
-                      (opportunity) =>
-                        opportunity.category === category
-                    )
-                  )
-                }
+                className={`px-6 py-3 border-2 ${
+                  selectedCategory === category
+                    ? "bg-slate-300 text-grey"
+                    : "border-slate-300"
+                } font-medium rounded-full`}
+                onClick={() => handleCategorySelect(category)}
               >
                 {category}
               </button>
@@ -99,10 +130,13 @@ function Opportunities() {
                 ? `${filteredOpportunities.length} event available`
                 : `${filteredOpportunities.length} events available`}
             </h2>
-            <span className="text-slate-500">Showing 1-10</span>
+            <span className="text-slate-500">
+              Showing {(currentPage - 1) * itemsPerPage + 1}-
+              {Math.min(currentPage * itemsPerPage, filteredOpportunities.length)}
+            </span>
           </div>
           <div className="mb-6">
-            {filteredOpportunities.map((el, index) => (
+            {displayedOpportunities.map((el, index) => (
               <Link
                 to={`/opportunities/${el.id}`}
                 state={{ opportunityData: el }}
@@ -132,13 +166,20 @@ function Opportunities() {
             ))}
           </div>
 
-          {/* TODO: Implement pagination */}
+          {/* Pagination Controls */}
           <div className="flex flex-col md:flex-row justify-between items-center md:items-stretch space-y-4 md:space-y-0">
             <div className="md:flex-1 flex items-center md:justify-start">
-              <span className="text-slate-500">Showing 1-10</span>
+              <span className="text-slate-500">
+                Showing {(currentPage - 1) * itemsPerPage + 1}-
+                {Math.min(currentPage * itemsPerPage, filteredOpportunities.length)}
+              </span>
             </div>
             <div className="flex justify-center space-x-4">
-              <button className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2">
+              <button
+                className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
                 <span>
                   <ArrowLongLeftIcon
                     aria-hidden="true"
@@ -147,7 +188,11 @@ function Opportunities() {
                 </span>
                 <span className="font-medium">Prev</span>
               </button>
-              <button className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2">
+              <button
+                className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
                 <span className="font-medium">Next</span>
                 <span>
                   <ArrowLongRightIcon
@@ -162,7 +207,7 @@ function Opportunities() {
 
         <div className="hidden md:block w-1/3">
           <MapOpportunities
-            opportunities={filteredOpportunities}
+            opportunities={displayedOpportunities}
           />
         </div>
       </div>
