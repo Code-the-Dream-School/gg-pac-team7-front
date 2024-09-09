@@ -120,12 +120,4 @@ import Alert from "../components/Alert";
 2. Run `npm install` to install dependencies
 3. Pull the latest version of the `main` branch (when needed)
 4. Run `npm start` to start the development server
-5. Open http://localhost:3000 with your browser to see the data received the back-end server.
-6. Now you have your front-end and back-end running locally!
-
-#### Running the front-end server in Visual Studio Code
-Note: In the below example, the group's front-end repository was named `bb-practicum-team1-front` and the back-end repository was named `bb-practicum-team-1-back`.  Your repository will have a different name, but the rest should look the same.
-![vsc running](images/front-end-running-vsc.png)
-
-#### Running the front-end server in the browser
-![browser running](images/front-end-running-browser.png)
+5. Open http://localhost:5173 with your browser.
