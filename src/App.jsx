@@ -8,6 +8,7 @@ import Opportunities from "./pages/Opportunities";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import ContactUs from "./pages/ContactUs";
 import LogIn from "./pages/LogIn";
+import Register from './pages/Register';
 import Documentation from "./pages/Documentation";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/login" element={<LogIn />} />
+            <Route path="/register" element={<Register />} />
             {/* TODO: Comment out "/documentation" route before deploying */}
             <Route path="/documentation" element={<Documentation />} />
           </Routes>
