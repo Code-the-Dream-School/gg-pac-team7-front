@@ -5,13 +5,8 @@ function LogIn() {
   const userRef = useRef();
   const errRef = useRef();
 
-  const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
   const [email, setEmail] = useState('');
-  const [validEmail, setValidEmail] = useState(false);
   const [password, setPassword] = useState('');
-  const [validPassword, setValidPassword] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
 
@@ -28,16 +23,6 @@ function LogIn() {
   useEffect(() => {
     setErrMsg('');
   }, [email, password]);
-
-  // Email validation using a regex
-  useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(email));
-  }, [email])
-
-  // Password validation using a regex
-  useEffect(() => {
-    setValidPassword(PWD_REGEX.test(password));
-  }, [password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -107,9 +92,6 @@ function LogIn() {
                 value={email}
                 required
               />
-              {!validEmail && email && (
-                <p className="text-red-500">Please enter a valid email address</p>
-              )}
 
               <label htmlFor="password">Password:</label>
               <input
@@ -119,12 +101,9 @@ function LogIn() {
                 value={password}
                 required
               />
-              {!validPassword && password && (
-                <p className="text-red-500">Password must be at least 6 characters</p>
-              )}
 
-              {/* Disable button if inputs are invalid */}
-              <button disabled={!validEmail || !validPassword}>
+              {/* Disable button if email is invalid */}
+              <button disabled={!validEmail}>
                 Sign In
               </button>
             </form>

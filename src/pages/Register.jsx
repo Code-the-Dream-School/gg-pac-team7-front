@@ -73,7 +73,7 @@ function Register () {
         try { 
             // Send registration data to the backend 
             const response = await axiosInstance.post('/auth/register', 
-                JSON.stringify({ firstName, lastName, email, password }),
+                JSON.stringify({ userName:'', firstName, lastName, email, password }),
                 {
                     headers: {'Content-Type': 'application/json'}
                 }
