@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome" ;
 import "./Register.css"
 import axiosInstance from '../api/axios';
 
-const USER_REGEX = /^[a-zA-Z]{3,20}$/;
+const NAME_REGEX = /^[a-zA-Z]{3,20}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
@@ -24,7 +24,7 @@ function Register () {
     const [validEmail, setValidEmail] = useState(false);
     const [emailFocus, setEmailFocus] = useState(false);
 
-    const [pwd, setPwd] = useState('');
+    const [password, setPassword] = useState('');
     const [validPwd, setValidPwd] = useState(false);
     const [pwdFocus, setPwdFocus] = useState(false);
 
@@ -40,11 +40,11 @@ function Register () {
     }, [])
 
     useEffect(() => {
-        setValidFirstName(USER_REGEX.test(firstName));
+        setValidFirstName(NAME_REGEX.test(firstName));
     }, [firstName])
 
     useEffect(() => {
-        setValidLastName(USER_REGEX.test(lastName));
+        setValidLastName(NAME_REGEX.test(lastName));
     }, [lastName])
 
     useEffect(() => {
@@ -52,42 +52,50 @@ function Register () {
     }, [email])
 
     useEffect(() => {
-        const isPwdValid = PWD_REGEX.test(pwd);
+        const isPwdValid = PWD_REGEX.test(password);
         setValidPwd(isPwdValid);
-        setValidMatch(isPwdValid && pwd === matchPwd);
-    }, [pwd, matchPwd])
+        setValidMatch(isPwdValid && password === matchPwd);
+    }, [password, matchPwd])
 
     useEffect(() => {
         setErrMsg('');
-    }, [firstName, lastName, email, pwd, matchPwd])
-
+    }, [firstName, lastName, email, password, matchPwd])
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        try {  
+
+        // Validation before submitting the form 
+        if (!validFirstName || !validLastName || !validEmail || !validPwd || !validMatch) {
+            setErrMsg('Invalid Entry');
+            return;
+        }    
+
+        try { 
+            // Send registration data to the backend 
             const response = await axiosInstance.post('/auth/register', 
-                JSON({firstName, lastName, email, pwd }),
+                JSON.stringify({ userName:'', firstName, lastName, email, password }),
                 {
                     headers: {'Content-Type': 'application/json'}
                 }
             );
+            
 
             setSuccess(true);
             setFirstName('');
             setLastName('');
             setEmail('');
-            setPwd('');
-            setMatchPwd(''); 
+            setPassword('');
+            setMatchPwd('');
 
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
+                setErrMsg('Email already registered');
             } else {
                 setErrMsg('Registration Failed')
             }
-            errRef.current.focus();
+            //errRef.current.focus();
         }
     }
 
@@ -208,14 +216,14 @@ function Register () {
                                 <span className={validPwd ? "valid" : "hide"}>
                                     <FontAwesomeIcon icon={faCheck} />
                                 </span>
-                                <span className={validPwd || !pwd ? "hide" : "invalid"}>
+                                <span className={validPwd || !password ? "hide" : "invalid"}>
                                     <FontAwesomeIcon icon={faTimes} />
                                 </span>
                             </label>
                             <input
                                 type="password"
                                 id="password"
-                                onChange={(e) => setPwd(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                                 aria-invalid={validPwd ? "false" : "true"}
                                 aria-describedby="instruction"
@@ -266,7 +274,7 @@ function Register () {
                 </section>
             )}
         </div>
-    )
+    );
 }
 
 export default Register;
