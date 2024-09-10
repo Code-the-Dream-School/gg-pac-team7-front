@@ -1,13 +1,15 @@
-import React, { useRef, useCallback, useEffect } from "react";
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import React, { useRef, useCallback, useState, useEffect } from "react";
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { Link } from "react-router-dom"; // Import Link if you want to use React Router
 
 // Define the libraries needed for Google Maps
-const libraries = ['marker']; 
+const libraries = ['places'];
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function MapOpportunities({ opportunities }) {
   // Reference to hold the map instance.
   const mapRef = useRef(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null); // State for the selected marker (opportunity)
 
   const mapContainerStyle = {
     width: "100%",
@@ -49,14 +51,19 @@ function MapOpportunities({ opportunities }) {
 
       opportunities.forEach((opportunity) => {
         const { latitude, longitude, title } = opportunity;
-        
+
         // Create and place a marker on the map.
         const marker = new window.google.maps.Marker({
           map,
           position: { lat: latitude, lng: longitude },
           title: title,
         });
-        
+
+        // Add click event to open InfoWindow with opportunity details
+        marker.addListener('click', () => {
+          setSelectedOpportunity(opportunity); // Set the selected opportunity to display in InfoWindow
+        });
+
         map.markers.push(marker);
 
         // Extend the map bounds to include this location.
@@ -93,9 +100,33 @@ function MapOpportunities({ opportunities }) {
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       onLoad={onLoad}
-    />
+      onClick={() => setSelectedOpportunity(null)} // Close InfoWindow when clicking on the map
+    >
+      {selectedOpportunity && (
+        <InfoWindow
+          position={{
+            lat: selectedOpportunity.latitude,
+            lng: selectedOpportunity.longitude,
+          }}
+          onCloseClick={() => setSelectedOpportunity(null)} // Close InfoWindow when clicking the close button
+        >
+          <div>
+            <a
+              href={`/opportunities/${selectedOpportunity.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <h3>{selectedOpportunity.title}</h3>
+              <p>{selectedOpportunity.description}</p>
+              <p><strong>Date:</strong> {selectedOpportunity.date}</p>
+              <p><strong>Location:</strong> {selectedOpportunity.location}</p>
+            </a>
+          </div>
+        </InfoWindow>
+      )}
+    </GoogleMap>
   );
 }
 
 export default MapOpportunities;
-
