@@ -10,6 +10,8 @@ function LogIn() {
   const [errMsg, setErrMsg] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
 
+  const isFormValid = email && password;
+
   useEffect(() => {
     userRef.current.focus();
 
@@ -102,8 +104,7 @@ function LogIn() {
                 required
               />
 
-              {/* Disable button if email is invalid */}
-              <button disabled={!validEmail}>
+              <button disabled={!isFormValid}>
                 Sign In
               </button>
             </form>
