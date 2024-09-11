@@ -42,8 +42,6 @@ function Navigation() {
   }, [location.pathname]);
 
   useEffect(() => {
-    console.log("current token:", token);
-
     if (token) {
       fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/profile`, {
         headers: {
