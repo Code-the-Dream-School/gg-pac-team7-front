@@ -1,8 +1,13 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 
 // Define the libraries needed for Google Maps
-const libraries = ['places'];
+const libraries = ["places"];
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function MapOpportunities({ opportunities }) {
@@ -24,19 +29,22 @@ function MapOpportunities({ opportunities }) {
   });
 
   // Callback to handle the map load event.
-  const onLoad = useCallback((map) => {
-    mapRef.current = map; // Store the map instance in the ref.
+  const onLoad = useCallback(
+    (map) => {
+      mapRef.current = map; // Store the map instance in the ref.
 
-    if (opportunities.length > 0) {
-      updateMarkers(map, opportunities); // Update markers based on opportunities.
-    }
-  }, [opportunities]);
+      if (opportunities.length > 0) {
+        updateMarkers(map, opportunities); // Update markers based on opportunities.
+      }
+    },
+    [opportunities]
+  );
 
   // Function to update the markers on the map based on the opportunities.
   const updateMarkers = (map, opportunities) => {
     // Clear previous markers from the map.
     map.markers = map.markers || [];
-    map.markers.forEach(marker => marker.setMap(null));
+    map.markers.forEach((marker) => marker.setMap(null));
     map.markers = [];
 
     // If no opportunities, do not add any markers.
@@ -59,7 +67,7 @@ function MapOpportunities({ opportunities }) {
         });
 
         // Add click event to open InfoWindow with opportunity details
-        marker.addListener('click', () => {
+        marker.addListener("click", () => {
           setSelectedOpportunity(opportunity); // Set the selected opportunity to display in InfoWindow
         });
 
@@ -114,20 +122,32 @@ function MapOpportunities({ opportunities }) {
               href={`/opportunities/${selectedOpportunity.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ textDecoration: 'none', color: 'inherit' }}
+              style={{ textDecoration: "none", color: "inherit" }}
             >
-              <h3 style={{
-                color: "#64748B",
-                fontWeight: 600,
-                fontSize: "16px",
-                paddingBottom: "10px"
-              }}>{selectedOpportunity.title}</h3>
-              <p style={{
-                fontSize: "14px",
-                paddingBottom: "5px"
-              }}>{selectedOpportunity.description}</p>
-              <p style={{paddingBottom: "5px"}}><strong>Date:</strong> {selectedOpportunity.date}</p>
-              <p><strong>Location:</strong> {selectedOpportunity.location}</p>
+              <h3
+                style={{
+                  color: "#64748B",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  paddingBottom: "10px",
+                }}
+              >
+                {selectedOpportunity.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  paddingBottom: "5px",
+                }}
+              >
+                {selectedOpportunity.description}
+              </p>
+              <p style={{ paddingBottom: "5px" }}>
+                <strong>Date:</strong> {selectedOpportunity.date}
+              </p>
+              <p>
+                <strong>Location:</strong> {selectedOpportunity.location}
+              </p>
             </a>
           </div>
         </InfoWindow>

@@ -55,6 +55,7 @@ function Navigation() {
   }, [token, location.pathname, navigate]);
 
   const navigation = [
+    { name: "User Account", href: "/account" },
     { name: "Opportunities", href: "/opportunities" },
     { name: "About", href: "/about" },
     { name: "Contact us", href: "/contact-us" },

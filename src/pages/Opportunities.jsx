@@ -30,8 +30,7 @@ function Opportunities() {
           date: new Date(item.startDate).toLocaleDateString(),
           location: item.address,
           description: item.description,
-          mainImageUrl:
-            item.eventImages[0] || "placeholder-image-url.jpg",
+          mainImageUrl: item.eventImages[0] || "placeholder-image-url.jpg",
           latitude: item.coordinates[0],
           longitude: item.coordinates[1],
           category: item.category,
@@ -132,15 +131,15 @@ function Opportunities() {
             </h2>
             <span className="text-slate-500">
               Showing {(currentPage - 1) * itemsPerPage + 1}-
-              {Math.min(currentPage * itemsPerPage, filteredOpportunities.length)}
+              {Math.min(
+                currentPage * itemsPerPage,
+                filteredOpportunities.length
+              )}
             </span>
           </div>
           <div className="mb-6">
             {displayedOpportunities.map((opportunity, index) => (
-              <OpportunityItem
-              key={index}
-              opportunity={opportunity}
-              />
+              <OpportunityItem key={index} opportunity={opportunity} />
             ))}
           </div>
 
@@ -149,7 +148,10 @@ function Opportunities() {
             <div className="md:flex-1 flex items-center md:justify-start">
               <span className="text-slate-500">
                 Showing {(currentPage - 1) * itemsPerPage + 1}-
-                {Math.min(currentPage * itemsPerPage, filteredOpportunities.length)}
+                {Math.min(
+                  currentPage * itemsPerPage,
+                  filteredOpportunities.length
+                )}
               </span>
             </div>
 
@@ -161,7 +163,10 @@ function Opportunities() {
                     onClick={handlePrevPage}
                   >
                     <span>
-                      <ArrowLongLeftIcon aria-hidden="true" className="h-6 w-6" />
+                      <ArrowLongLeftIcon
+                        aria-hidden="true"
+                        className="h-6 w-6"
+                      />
                     </span>
                     <span className="font-medium">Prev</span>
                   </button>
@@ -173,7 +178,10 @@ function Opportunities() {
                   >
                     <span className="font-medium">Next</span>
                     <span>
-                      <ArrowLongRightIcon aria-hidden="true" className="h-6 w-6" />
+                      <ArrowLongRightIcon
+                        aria-hidden="true"
+                        className="h-6 w-6"
+                      />
                     </span>
                   </button>
                 )}
@@ -183,9 +191,7 @@ function Opportunities() {
         </div>
 
         <div className="hidden md:block w-1/3">
-          <MapOpportunities
-            opportunities={displayedOpportunities}
-          />
+          <MapOpportunities opportunities={displayedOpportunities} />
         </div>
       </div>
     </>
