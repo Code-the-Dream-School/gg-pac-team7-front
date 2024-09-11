@@ -2,6 +2,27 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
+function ProfileImage({ userData }) {
+  return (
+    <Link to="/account" className="flex space-x-2 border-gray-500">
+      <div className="h-6 w-6 rounded-full bg-gray-300">
+        {userData && (
+          <img
+            src={`${import.meta.env.VITE_REACT_APP_BACKEND_URL}${userData.avatarUrl}`}
+            alt={`${userData.firstName} ${userData.lastName}`}
+            className="h-6 w-6 rounded-full"
+          />
+        )}
+      </div>
+      <span className="font-medium">
+        {userData
+          ? `${userData.firstName} ${userData.lastName.charAt(0)}.`
+          : "..."}
+      </span>
+    </Link>
+  );
+}
+
 function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -11,9 +32,9 @@ function Navigation() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setUserData(null); 
+    setUserData(null);
     setMenuOpen(false);
-    navigate("/login"); 
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -21,17 +42,10 @@ function Navigation() {
   }, [location.pathname]);
 
   useEffect(() => {
-
-    {/* 
-      Ask Akhil about this
-
-      if (location.pathname.startsWith("/login") && token) {
-        navigate("/account");
-      }
-    */}
+    console.log("current token:", token);
 
     if (token) {
-      fetch("https://gg-pac-team7-back.onrender.com/api/v1/profile", {
+      fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,19 +79,10 @@ function Navigation() {
       {/* Dropdown menu */}
       {menuOpen && (
         <div className="absolute top-0 right-0 bg-white shadow-lg pr-9 pt-12 pl-5 pb-5 z-40 md:hidden p-3">
-          {userData && (
+          {token && (
             <div className="py-3 items-center mb-4 border-b">
               <div>
-                <Link to="/account" className="flex space-x-2 border-gray-500">
-                  <img
-                    src={`https://gg-pac-team7-back.onrender.com${userData.avatarUrl}`}
-                    alt={`${userData.firstName} ${userData.lastName}`}
-                    className="h-6 w-6 rounded-full"
-                  />
-                  <span className="font-medium">
-                    {userData.firstName} {userData.lastName.charAt(0)}.
-                  </span>
-                </Link>
+                <ProfileImage userData={userData} />
                 <div className="pl-8">
                   <button
                     onClick={handleLogout}
@@ -106,22 +111,6 @@ function Navigation() {
                 </Link>
               </li>
             ))}
-
-            {!userData && (
-              <li>
-                <Link
-                  to="/login"
-                  className={`${
-                    isActive(location.pathname, "/login")
-                      ? "bg-slate-500 text-white"
-                      : "text-gray-900"
-                  } block px-3 py-2 rounded-md`}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Log In
-                </Link>
-              </li>
-            )}
           </ul>
         </div>
       )}
@@ -144,15 +133,9 @@ function Navigation() {
             </li>
           ))}
           <li>
-            {userData ? (
+            {token ? (
               <div className="flex items-center space-x-2">
-                <Link to="/account">
-                  <img
-                    src={`https://gg-pac-team7-back.onrender.com${userData.avatarUrl}`}
-                    alt={`${userData.firstName} ${userData.lastName}`}
-                    className="h-8 w-8 rounded-full"
-                  />
-                </Link>
+                <ProfileImage userData={userData} />
               </div>
             ) : (
               <Link
