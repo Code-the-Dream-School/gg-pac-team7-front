@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ImageHer from "../../public/her.jpeg";
 import ImageHim from "../../public/him2.jpeg";
 import ContentContainer from "../components/ContentContainer";
@@ -9,7 +9,7 @@ const user = {
   email: "email@example.com",
 };
 
-const bookmarks = [
+const staticBookmarks = [
   {
     title: `Jane Doe's Event`,
     startDate: new Date().toISOString(),
@@ -29,11 +29,50 @@ const bookmarks = [
 ];
 
 const UserAccount = () => {
+  const [bookmarks, setBookmarks] = useState([]);
+
+  useEffect(() => {
+  
+    const fetchInterestedEvents = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/bookmarks`
+        );
+        const data = await response.json();
+        if (data.bookmarks && data.bookmarks.length > 0) {
+          setBookmarks(data.bookmarks); 
+        } else {
+          setBookmarks(staticBookmarks); 
+        }
+      } catch (error) {
+        console.error("Error fetching interested events:", error);
+        setBookmarks(staticBookmarks); 
+      }
+    };
+
+    fetchInterestedEvents();
+  }, []);
+
+  const handleRemoveEvent = async (eventId) => {
+    try {
+  
+      await fetch(
+        `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/bookmarks/${eventId}`,
+        { method: "DELETE" }
+      );
+    
+      const updatedEvents = bookmarks.filter((event) => event._id !== eventId);
+      setBookmarks(updatedEvents);
+    } catch (error) {
+      console.error("Error removing event:", error);
+    }
+  };
+
   return (
     <ContentContainer heading={`Hi ${user.firstName} ${user.lastName}`}>
       <p style={styles.email}>{`${user.email}`}</p>
       {bookmarks.map((bookmark, index) => (
-        <BookmarkedEvent key={index} bookmark={bookmark} />
+        <BookmarkedEvent key={index} bookmark={bookmark} onRemove={handleRemoveEvent} />
       ))}
     </ContentContainer>
   );
@@ -59,8 +98,8 @@ const BookmarkedEvent = ({ bookmark }) => {
 const styles = {
   email: {
     fontSize: "18px",
-    color: "blue",    
-    marginBottom: "16px", 
+    color: "blue",
+    marginBottom: "16px",
   },
   bookmarkContainer: {
     display: "flex",
