@@ -1,13 +1,19 @@
-import React, { useRef, useCallback, useEffect } from "react";
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import React, { useRef, useCallback, useState, useEffect } from "react";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  InfoWindow,
+} from "@react-google-maps/api";
 
 // Define the libraries needed for Google Maps
-const libraries = ['marker']; 
+const libraries = ["places"];
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 function MapOpportunities({ opportunities }) {
   // Reference to hold the map instance.
   const mapRef = useRef(null);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null); // State for the selected marker (opportunity)
 
   const mapContainerStyle = {
     width: "100%",
@@ -23,19 +29,22 @@ function MapOpportunities({ opportunities }) {
   });
 
   // Callback to handle the map load event.
-  const onLoad = useCallback((map) => {
-    mapRef.current = map; // Store the map instance in the ref.
+  const onLoad = useCallback(
+    (map) => {
+      mapRef.current = map; // Store the map instance in the ref.
 
-    if (opportunities.length > 0) {
-      updateMarkers(map, opportunities); // Update markers based on opportunities.
-    }
-  }, [opportunities]);
+      if (opportunities.length > 0) {
+        updateMarkers(map, opportunities); // Update markers based on opportunities.
+      }
+    },
+    [opportunities]
+  );
 
   // Function to update the markers on the map based on the opportunities.
   const updateMarkers = (map, opportunities) => {
     // Clear previous markers from the map.
     map.markers = map.markers || [];
-    map.markers.forEach(marker => marker.setMap(null));
+    map.markers.forEach((marker) => marker.setMap(null));
     map.markers = [];
 
     // If no opportunities, do not add any markers.
@@ -49,14 +58,19 @@ function MapOpportunities({ opportunities }) {
 
       opportunities.forEach((opportunity) => {
         const { latitude, longitude, title } = opportunity;
-        
+
         // Create and place a marker on the map.
         const marker = new window.google.maps.Marker({
           map,
           position: { lat: latitude, lng: longitude },
           title: title,
         });
-        
+
+        // Add click event to open InfoWindow with opportunity details
+        marker.addListener("click", () => {
+          setSelectedOpportunity(opportunity); // Set the selected opportunity to display in InfoWindow
+        });
+
         map.markers.push(marker);
 
         // Extend the map bounds to include this location.
@@ -93,9 +107,53 @@ function MapOpportunities({ opportunities }) {
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       onLoad={onLoad}
-    />
+      onClick={() => setSelectedOpportunity(null)} // Close InfoWindow when clicking on the map
+    >
+      {selectedOpportunity && (
+        <InfoWindow
+          position={{
+            lat: selectedOpportunity.latitude,
+            lng: selectedOpportunity.longitude,
+          }}
+          onCloseClick={() => setSelectedOpportunity(null)} // Close InfoWindow when clicking the close button
+        >
+          <div>
+            <a
+              href={`/opportunities/${selectedOpportunity.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <h3
+                style={{
+                  color: "#64748B",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  paddingBottom: "10px",
+                }}
+              >
+                {selectedOpportunity.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  paddingBottom: "5px",
+                }}
+              >
+                {selectedOpportunity.description}
+              </p>
+              <p style={{ paddingBottom: "5px" }}>
+                <strong>Date:</strong> {selectedOpportunity.date}
+              </p>
+              <p>
+                <strong>Location:</strong> {selectedOpportunity.location}
+              </p>
+            </a>
+          </div>
+        </InfoWindow>
+      )}
+    </GoogleMap>
   );
 }
 
 export default MapOpportunities;
-
