@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import {
   ArrowLongLeftIcon,
   ArrowLongRightIcon,
 } from "@heroicons/react/24/outline";
 import SearchOpportunities from "./SearchOpportunities";
 import MapOpportunities from "./MapOpportunities";
+import OpportunityItem from "./OpportunityItem";
 
 function Opportunities() {
   const [opportunities, setOpportunities] = useState([]);
@@ -136,33 +136,11 @@ function Opportunities() {
             </span>
           </div>
           <div className="mb-6">
-            {displayedOpportunities.map((el, index) => (
-              <Link
-                to={`/opportunities/${el.id}`}
-                state={{ opportunityData: el }}
-                key={index}
-                className="block mb-8"
-              >
-                <div className="flex flex-col md:flex-row border-b pb-8">
-                  <div className="mb-4 md:mb-0 w-full md:w-48 md:h-32 flex-shrink-0 md:mx-0 md:mr-4">
-                    <img
-                      src={el.mainImageUrl}
-                      alt={`Opportunity ${el.id}`}
-                      className="w-full h-full max-w-xs max-h-48 mx-auto md:max-w-full md:max-h-full object-cover rounded"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="underline text-lg text-blue-500 hover:text-blue-400">
-                      {el.title}
-                    </h4>
-                    <div className="text-sm text-slate-500">
-                      <span>{el.date}, </span>
-                      <span>{el.location}</span>
-                    </div>
-                    <p className="mb-2">{el.description}</p>
-                  </div>
-                </div>
-              </Link>
+            {displayedOpportunities.map((opportunity, index) => (
+              <OpportunityItem
+              key={index}
+              opportunity={opportunity}
+              />
             ))}
           </div>
 
