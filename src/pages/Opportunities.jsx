@@ -174,34 +174,33 @@ function Opportunities() {
                 {Math.min(currentPage * itemsPerPage, filteredOpportunities.length)}
               </span>
             </div>
-            <div className="flex justify-center space-x-4">
-              <button
-                className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
-                <span>
-                  <ArrowLongLeftIcon
-                    aria-hidden="true"
-                    className="h-6 w-6"
-                  />
-                </span>
-                <span className="font-medium">Prev</span>
-              </button>
-              <button
-                className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-              >
-                <span className="font-medium">Next</span>
-                <span>
-                  <ArrowLongRightIcon
-                    aria-hidden="true"
-                    className="h-6 w-6"
-                  />
-                </span>
-              </button>
-            </div>
+
+            {filteredOpportunities.length > itemsPerPage && ( // Conditionally render buttons if more than 10 items
+              <div className="flex justify-center space-x-4">
+                {currentPage > 1 && (
+                  <button
+                    className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
+                    onClick={handlePrevPage}
+                  >
+                    <span>
+                      <ArrowLongLeftIcon aria-hidden="true" className="h-6 w-6" />
+                    </span>
+                    <span className="font-medium">Prev</span>
+                  </button>
+                )}
+                {currentPage < totalPages && (
+                  <button
+                    className="flex bg-slate-200 rounded-full px-5 py-2 space-x-2"
+                    onClick={handleNextPage}
+                  >
+                    <span className="font-medium">Next</span>
+                    <span>
+                      <ArrowLongRightIcon aria-hidden="true" className="h-6 w-6" />
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

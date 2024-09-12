@@ -1,6 +1,5 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
-import { Link } from "react-router-dom"; // Import Link if you want to use React Router
 
 // Define the libraries needed for Google Maps
 const libraries = ['places'];
@@ -117,9 +116,17 @@ function MapOpportunities({ opportunities }) {
               rel="noopener noreferrer"
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
-              <h3>{selectedOpportunity.title}</h3>
-              <p>{selectedOpportunity.description}</p>
-              <p><strong>Date:</strong> {selectedOpportunity.date}</p>
+              <h3 style={{
+                color: "#64748B",
+                fontWeight: 600,
+                fontSize: "16px",
+                paddingBottom: "10px"
+              }}>{selectedOpportunity.title}</h3>
+              <p style={{
+                fontSize: "14px",
+                paddingBottom: "5px"
+              }}>{selectedOpportunity.description}</p>
+              <p style={{paddingBottom: "5px"}}><strong>Date:</strong> {selectedOpportunity.date}</p>
               <p><strong>Location:</strong> {selectedOpportunity.location}</p>
             </a>
           </div>
