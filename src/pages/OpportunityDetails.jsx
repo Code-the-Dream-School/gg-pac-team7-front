@@ -139,14 +139,6 @@ function OpportunityDetails() {
     return <div>Opportunity not found</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (!opportunityData) {
-    return <div>Opportunity not found</div>;
-  }
-
   return (
     <>
       {showLoginAlert && (
