@@ -29,7 +29,6 @@ const UserAccount = () => {
         );
         const data = await response.json();
         setUser(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -45,7 +44,6 @@ const UserAccount = () => {
           }
         );
         const data = await response.json();
-        console.log(data, `HHHHHHHHHHH`);
         // Map the API data to match with our structure
         const mappedData = data.map((item) => ({
           id: item.event._id,
