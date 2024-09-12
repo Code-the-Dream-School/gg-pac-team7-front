@@ -5,7 +5,7 @@ import {
 } from "@heroicons/react/24/outline";
 import SearchOpportunities from "./SearchOpportunities";
 import MapOpportunities from "./MapOpportunities";
-import OpportunityItem from "./OpportunityItem";
+import OpportunityItem from "../components/OpportunityItem";
 
 function Opportunities() {
   const [opportunities, setOpportunities] = useState([]);
