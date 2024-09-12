@@ -2,6 +2,7 @@ import React from "react";
 import ImageHer from "../../public/her.jpeg";
 import ImageHim from "../../public/him2.jpeg";
 import ContentContainer from "../components/ContentContainer";
+import OpportunityItem  from "./OpportunityItem"
 
 const user = {
   firstName: "Person",
@@ -33,7 +34,7 @@ const UserAccount = () => {
     <ContentContainer heading={`Hi ${user.firstName} ${user.lastName}`}>
       <p style={styles.email}>{`${user.email}`}</p>
       {bookmarks.map((bookmark, index) => (
-        <BookmarkedEvent key={index} bookmark={bookmark} />
+        <OpportunityItemt key={index} bookmark={bookmark} />
       ))}
     </ContentContainer>
   );
