@@ -93,7 +93,7 @@ function Navigation() {
             </div>
           )}
 
-          <ul className="flex flex-col space-y-2">
+<ul className="flex flex-col space-y-2">
             {navigation.map((item) => (
               <li key={item.name}>
                 <Link
@@ -109,6 +109,21 @@ function Navigation() {
                 </Link>
               </li>
             ))}
+            {!token && (
+              <li>
+                <Link
+                  to="/login"
+                  className={`${
+                    isActive(location.pathname, "/login")
+                      ? "bg-slate-500 text-white"
+                      : "text-gray-900"
+                  } block px-3 py-2 rounded-md`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Log In
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       )}
