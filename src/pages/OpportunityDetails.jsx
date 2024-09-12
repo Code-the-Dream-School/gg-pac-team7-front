@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MapPinIcon, CalendarDaysIcon, HeartIcon } from "@heroicons/react/24/outline";
+import {
+  MapPinIcon,
+  CalendarDaysIcon,
+  HeartIcon,
+} from "@heroicons/react/24/outline";
+import Alert from "../components/Alert";
 
 function OpportunityDetails() {
   const { id } = useParams(); // Get ID from URL params
   const [opportunityData, setOpportunityData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false); // State for bookmark
+  const [bookmarkId, setBookmarkId] = useState(null); // Store bookmark ID
+  const [showLoginAlert, setShowLoginAlert] = useState(false); // For showing the alert
+  const token = localStorage.getItem("token"); // Check if user is logged in
 
   useEffect(() => {
     const fetchOpportunityDetails = async () => {
@@ -19,7 +28,6 @@ function OpportunityDetails() {
         }
         const data = await response.json();
 
-        // Map the API response to match the expected structure
         const mappedOpportunity = {
           id: data._id,
           title: data.title,
@@ -35,6 +43,26 @@ function OpportunityDetails() {
 
         setOpportunityData(mappedOpportunity);
         setLoading(false);
+
+        // Check if the event is already bookmarked
+        if (token) {
+          const bookmarkResponse = await fetch(
+            `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/bookmarks`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const bookmarks = await bookmarkResponse.json();
+          const bookmark = bookmarks.find(
+            (bookmark) => bookmark.event._id === id
+          ); // Check event._id
+          if (bookmark) {
+            setIsBookmarked(true);
+            setBookmarkId(bookmark._id); // Store bookmark ID for deletion
+          }
+        }
       } catch (error) {
         setError("Failed to load opportunity details");
         setLoading(false);
@@ -42,7 +70,62 @@ function OpportunityDetails() {
     };
 
     fetchOpportunityDetails();
-  }, [id]);
+  }, [id, token]);
+
+  const handleBookmarkClick = async () => {
+    if (!token) {
+      setShowLoginAlert(true);
+
+      setTimeout(() => {
+        setShowLoginAlert(false);
+      }, 5000);
+      return;
+    }
+
+    try {
+      if (isBookmarked) {
+        // If already bookmarked, remove bookmark
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_REACT_APP_BACKEND_URL
+          }/api/v1/bookmarks/${bookmarkId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          setIsBookmarked(false);
+          setBookmarkId(null);
+        }
+      } else {
+        // Add bookmark
+        const response = await fetch(
+          `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/bookmarks`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ event: id }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setIsBookmarked(true);
+          setBookmarkId(data._id); // Store the new bookmark ID for future removal
+        }
+      }
+    } catch (error) {
+      console.error("Error handling bookmark:", error);
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -55,9 +138,19 @@ function OpportunityDetails() {
   if (!opportunityData) {
     return <div>Opportunity not found</div>;
   }
-  
+
   return (
     <>
+      {showLoginAlert && (
+        <div className="fixed top-10 left-0 right-0 z-50 flex justify-center">
+          <div className="w-full md:max-w-md">
+            <Alert
+              type="info"
+              title="You need to log in to add this event to your list."
+            />
+          </div>
+        </div>
+      )}
       <div className="w-full h-72 overflow-hidden shadow-md mb-8">
         <img
           src={opportunityData.mainImageUrl}
@@ -104,11 +197,18 @@ function OpportunityDetails() {
             rel="noopener noreferrer"
             className="bg-gray-200 text-black font-bold py-4 px-5 rounded-full border-2 border-gray-200"
           >
-            <span>I'M INTERESTED</span>
+            <span>Learn More</span>
           </a>
-          <button className="text-black font-bold py-4 px-5 rounded-full flex items-center space-x-1 border-2 border-gray-300">
+          <button
+            onClick={handleBookmarkClick}
+            className={`${
+              isBookmarked ? "bg-red-500 text-white" : "text-black bg-gray-200"
+            } font-bold py-4 px-5 rounded-full flex items-center space-x-1 border-2 border-gray-300`}
+          >
             <HeartIcon aria-hidden="true" className="h-6 w-6" />
-            <span>SAVE TO LIST</span>
+            <span>
+              {isBookmarked ? "Remove from Favorites" : "Add to Favorites"}
+            </span>
           </button>
         </div>
 
