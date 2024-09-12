@@ -1,35 +1,28 @@
 import React, { useEffect, useState } from "react";
-import ImageHer from "../../public/her.jpeg";
-import ImageHim from "../../public/him2.jpeg";
 import ContentContainer from "../components/ContentContainer";
-const user = {
-  firstName: "Person",
-  lastName: "Doe",
-  email: "email@example.com",
-};
-const staticBookmarks = [
-  {
-    title: `Jane Doe's Event`,
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
-    address: "123 Main St, Cityville",
-    coordinates: { lat: "40.7128", lng: "-74.0060" },
-    image: ImageHer,
-  },
-  {
-    title: `John Doe's Event`,
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
-    address: "123 Main St, Cityville",
-    coordinates: { lat: "40.7128", lng: "-74.0060" },
-    image: ImageHim,
-  },
-];
+import OpportunityItem from "./OpportunityItem";
+
+
 const UserAccount2 = () => {
   const token = localStorage.getItem("token");
 
   const [bookmarks, setBookmarks] = useState([]);
+  const [user, setUser] = useState({});
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api/v1/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        const data = await response.json();
+        setUser(data)
+        console.log(data)
+      }catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
     const fetchInterestedEvents = async () => {
       try {
         const response = await fetch(
@@ -42,16 +35,26 @@ const UserAccount2 = () => {
         );
         const data = await response.json();
         console.log(data, `HHHHHHHHHHH`);
-        if (data.bookmarks && data.bookmarks.length > 0) {
-          setBookmarks(data.bookmarks);
-        } else {
-          setBookmarks(staticBookmarks);
-        }
+        // Map the API data to match with our structure
+        const mappedData = data.map((item) => ({
+          id: item.event._id,
+          title: item.event.title,
+          date: new Date(item.event.startDate).toLocaleDateString(),
+          location: item.event.address,
+          description: item.event.description,
+          mainImageUrl: item.event.eventImages[0] || "placeholder-image-url.jpg",
+          latitude: item.event.coordinates[0],
+          longitude: item.event.coordinates[1],
+          category: item.event.category,
+        }));
+        if (mappedData && mappedData.length > 0) {
+          setBookmarks(mappedData);
+        } 
       } catch (error) {
         console.error("Error fetching interested events:", error);
-        // setBookmarks(staticBookmarks);
       }
     };
+    fetchUser();
     fetchInterestedEvents();
   }, []);
   const handleRemoveEvent = async (eventId) => {
@@ -70,54 +73,24 @@ const UserAccount2 = () => {
   };
   return (
     <ContentContainer heading={`Hi ${user.firstName} ${user.lastName}`}>
-      <p style={styles.email}>{`${user.email}`}</p>
+      <p style={styles.email}>{`${user.userName}`}</p>
       {bookmarks.map((bookmark, index) => (
-        <BookmarkedEvent
+        <OpportunityItem
           key={index}
-          bookmark={bookmark}
-          onRemove={handleRemoveEvent}
+          opportunity={bookmark}
+          // onRemove={handleRemoveEvent}
         />
       ))}
     </ContentContainer>
   );
 };
-const BookmarkedEvent = ({ bookmark }) => {
-  return (
-    <div style={styles.bookmarkContainer}>
-      <img src={bookmark.image} alt="Event" style={styles.image} />
-      <div style={styles.textContainer}>
-        <h4>{bookmark.title}</h4>
-        <p>Start Date: {new Date(bookmark.startDate).toLocaleString()}</p>
-        <p>End Date: {new Date(bookmark.endDate).toLocaleString()}</p>
-        <p>Address: {bookmark.address}</p>
-        <p>
-          Coordinates: {bookmark.coordinates.lat}, {bookmark.coordinates.lng}
-        </p>
-      </div>
-    </div>
-  );
-};
+
 const styles = {
   email: {
     fontSize: "18px",
     color: "blue",
     marginBottom: "16px",
   },
-  bookmarkContainer: {
-    display: "flex",
-    alignItems: "center",
-    borderRadius: "8px",
-    padding: "16px",
-    margin: "16px 0",
-  },
-  image: {
-    width: "150px",
-    height: "auto",
-    borderRadius: "8px",
-    marginRight: "16px",
-  },
-  textContainer: {
-    flex: 1,
-  },
+
 };
 export default UserAccount2;
