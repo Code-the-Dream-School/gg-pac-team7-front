@@ -8,7 +8,9 @@ function ProfileImage({ userData }) {
       <div className="h-6 w-6 rounded-full bg-gray-300">
         {userData && (
           <img
-            src={`${import.meta.env.VITE_REACT_APP_BACKEND_URL}${userData.avatarUrl}`}
+            src={`${import.meta.env.VITE_REACT_APP_BACKEND_URL}${
+              userData.avatarUrl
+            }`}
             alt={`${userData.firstName} ${userData.lastName}`}
             className="h-6 w-6 rounded-full"
           />
@@ -55,7 +57,6 @@ function Navigation() {
   }, [token, location.pathname, navigate]);
 
   const navigation = [
-    { name: "User Account", href: "/account" },
     { name: "Opportunities", href: "/opportunities" },
     { name: "About", href: "/about" },
     { name: "Contact us", href: "/contact-us" },
@@ -94,7 +95,7 @@ function Navigation() {
             </div>
           )}
 
-<ul className="flex flex-col space-y-2">
+          <ul className="flex flex-col space-y-2">
             {navigation.map((item) => (
               <li key={item.name}>
                 <Link
