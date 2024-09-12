@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
-const UserAccount2 = () => {
+const UserAccount = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -129,4 +129,4 @@ const styles = {
     marginTop: "36px",
   },
 };
-export default UserAccount2;
+export default UserAccount;
