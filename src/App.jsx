@@ -19,10 +19,13 @@ function App() {
         {/* Header */}
         <header className="shadow">
           <div className="container flex mx-auto max-w-5xl px-4 py-6 justify-between items-center">
-            <div className="font-black text-xl">
+            <div className="text-2xl">
               <Link to="/" className="flex items-center space-x-1">
                 <GlobeEuropeAfricaIcon aria-hidden="true" className="h-6 w-6" />
-                <span className="align-middle">VOLUNTEER</span>
+                <span className="align-middle">
+                  <span className="text-green-800 font-black">ECO</span>
+                  <span className="font-extrabold">.LOGIC</span>
+                </span>
               </Link>
             </div>
             <Navigation />
@@ -48,7 +51,7 @@ function App() {
         {/* Footer */}
         <footer>
           <div className="container mx-auto max-w-5xl px-4 py-8 text-center text-slate-400 text-sm">
-            © 2024 VOLUNTEER Inc. All rights reserved.
+            © 2024 ECO.LOGIC. All rights reserved.
           </div>
         </footer>
       </div>
