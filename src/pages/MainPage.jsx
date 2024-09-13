@@ -41,7 +41,7 @@ function MainPage() {
           </div>
           <div className="hidden lg:flex lg:w-5/12">
             <img
-              src="./image2.jpg"
+              src="./mainImage.jpeg"
               alt="Ecological volunteer programs"
               className="rounded-lg"
             />
